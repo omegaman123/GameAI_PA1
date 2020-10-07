@@ -20,7 +20,30 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     """
     print(f'Initial position is {initial_position} and Destination is {destination}')
     print(f'Level has waypoints {graph["waypoints"]}')
-    h = adj(graph, initial_position)
+    h = []
+    heappush(h, (initial_position, 0))
+    came_from = dict()
+    cost_so_far = dict()
+    came_from[initial_position] = None
+    cost_so_far[initial_position] = 0.0
+
+    while not h == []:
+        print()
+        current = heappop(h)[0]
+
+        if current == destination:
+            break
+        for next_h in adj(graph, current):
+            print(f'adj_cell {next_h}')
+            next_cost = next_h[0]
+            next_coord = next_h[1]
+            new_cost = cost_so_far[current] + next_cost
+
+            if next_coord not in cost_so_far or new_cost < cost_so_far[next_coord]:
+                cost_so_far[next_coord] = new_cost
+                priority = new_cost
+                heappush(h, (next_coord, priority))
+                came_from[next_coord] = current
     pass
 
 
@@ -76,7 +99,7 @@ def navigation_edges(level, cell):
         else:
             edge_cost = (.5 * sqrt(2)) * adj_cost + (.5 * sqrt(2)) * curr_cost
         heappush(edges, (edge_cost, adj_cell))
-    # print(f'edges for cell {cell} with costs are {edges}')
+    print(f'edges for cell {cell} with costs are {edges}')
     return edges
     pass
 
