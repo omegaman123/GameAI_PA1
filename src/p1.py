@@ -34,7 +34,7 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         if current == destination:
             break
         for next_h in adj(graph, current):
-            print(f'adj_cell {next_h}')
+            print(f'adj cell has coord {next_h[1]} with cost {next_h[0]}')
             next_cost = next_h[0]
             next_coord = next_h[1]
             new_cost = cost_so_far[current] + next_cost
@@ -49,9 +49,10 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     if end not in came_from:
         return None
     while end is not initial_position:
-        print(f'path is currently {path} with current at current cell {end}')
+        print(f'path is currently {path} at current cell {end}')
         path.append(end)
         end = came_from[end]
+    print()
     return path
     pass
 
@@ -163,7 +164,7 @@ def cost_to_all_cells(filename, src_waypoint, output_filename):
 
 
 if __name__ == '__main__':
-    filename, src_waypoint, dst_waypoint = 'example.txt', 'a','d'
+    filename, src_waypoint, dst_waypoint = 'example.txt', 'a','c'
 
     # Use this function call to find the route between two waypoints.
     test_route(filename, src_waypoint, dst_waypoint)
