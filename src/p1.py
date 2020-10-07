@@ -44,6 +44,12 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
                 priority = new_cost
                 heappush(h, (next_coord, priority))
                 came_from[next_coord] = current
+    end = destination
+    path = []
+    while end is not initial_position:
+        path.append(end)
+        end = came_from[end]
+    return path
     pass
 
 
