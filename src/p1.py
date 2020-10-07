@@ -1,5 +1,7 @@
 from p1_support import load_level, show_level, save_level_costs
 from math import sqrt, inf
+from heapq import heappop, heappush
+
 
 
 def dijkstras_shortest_path(initial_position, destination, graph, adj):
@@ -16,9 +18,9 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         Otherwise, return None.
 
     """
-    print(f'Initial position is {initial_position} and Destination is {destination} for level')
+    print(f'Initial position is {initial_position} and Destination is {destination}')
     print(f'Level has waypoints {graph["waypoints"]}')
-    adj(graph, initial_position)
+    h = adj(graph, initial_position)
     pass
 
 
@@ -73,8 +75,9 @@ def navigation_edges(level, cell):
             edge_cost = .5 * adj_cost + .5 * curr_cost
         else:
             edge_cost = (.5 * sqrt(2)) * adj_cost + (.5 * sqrt(2)) * curr_cost
-        edges.append((adj_cell, edge_cost))
-    print(f'edges for cell {cell} with cost are {edges}')
+        heappush(edges, (edge_cost, adj_cell))
+    # print(f'edges for cell {cell} with costs are {edges}')
+    return edges
     pass
 
 
