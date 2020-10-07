@@ -1,6 +1,5 @@
 from p1_support import load_level, show_level, save_level_costs
-from math import inf, sqrt
-from heapq import heappop, heappush
+from math import sqrt, inf
 
 
 def dijkstras_shortest_path(initial_position, destination, graph, adj):
@@ -59,12 +58,23 @@ def navigation_edges(level, cell):
     for transform in transformations:
         print(f'Current Cell is {cell} and + {transform} = {tuple(map(lambda i, j: i + j, cell, transform))}')
         adj_cell = tuple(map(lambda i, j: i + j, cell, transform))
+        adj_cost = 0.0
+        curr_cost = level["spaces"][cell]
         if adj_cell in level["spaces"]:
-            print(f'{adj_cell} is a space')
+            print(f'{adj_cell} is a space and has cost {level["spaces"][adj_cell]}')
+            adj_cost = level["spaces"][adj_cell]
         elif adj_cell in level["walls"]:
             print(f'{adj_cell} is a wall')
+            continue
         elif adj_cell in level["waypoints"]:
             print(f'{adj_cell} is a waypoint')
+            adj_cost = 1.0
+        if 0 in transform:
+            edge_cost = .5 * adj_cost + .5 * curr_cost
+        else:
+            edge_cost = (.5 * sqrt(2)) * adj_cost + (.5 * sqrt(2)) * curr_cost
+        edges.append((adj_cell, edge_cost))
+    print(f'edges for cell {cell} with cost are {edges}')
     pass
 
 
