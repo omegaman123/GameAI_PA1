@@ -48,10 +48,12 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     path = []
     if end not in came_from:
         return None
+    print(f'cost to node {end} is {cost_so_far[end]}')
     while end is not initial_position:
         print(f'path is currently {path} at current cell {end}')
         path.append(end)
         end = came_from[end]
+
     print()
     return path
     pass
