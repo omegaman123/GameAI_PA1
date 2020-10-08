@@ -18,8 +18,8 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         Otherwise, return None.
 
     """
-    print(f'Initial position is {initial_position} and Destination is {destination}')
-    print(f'Level has waypoints {graph["waypoints"]}')
+    # print(f'Initial position is {initial_position} and Destination is {destination}')
+    # print(f'Level has waypoints {graph["waypoints"]}')
     h = []
     heappush(h, (initial_position, 0))
     came_from = dict()
@@ -28,13 +28,13 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     cost_so_far[initial_position] = 0.0
 
     while not h == []:
-        print()
+        # print()
         current = heappop(h)[0]
 
         if current == destination:
             break
         for next_h in adj(graph, current):
-            print(f'adj cell has coord {next_h[1]} with cost {next_h[0]}')
+            # print(f'adj cell has coord {next_h[1]} with cost {next_h[0]}')
             next_cost = next_h[0]
             next_coord = next_h[1]
             new_cost = cost_so_far[current] + next_cost
@@ -48,13 +48,13 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     path = []
     if end not in came_from:
         return None
-    print(f'cost to node {end} is {cost_so_far[end]}')
+    # print(f'cost to node {end} is {cost_so_far[end]}')
     while end is not initial_position:
-        print(f'path is currently {path} at current cell {end}')
+        # print(f'path is currently {path} at current cell {end}')
         path.append(end)
         end = came_from[end]
 
-    print()
+    # print()
     return path
     pass
 
@@ -70,6 +70,36 @@ def dijkstras_shortest_path_to_all(initial_position, graph, adj):
     Returns:
         A dictionary, mapping destination cells to the cost of a path from the initial_position.
     """
+    costs = dict()
+    for key in graph["waypoints"]:
+        destination = graph["waypoints"][key]
+        h = []
+        heappush(h, (initial_position, 0))
+        came_from = dict()
+        cost_so_far = dict()
+        came_from[initial_position] = None
+        cost_so_far[initial_position] = 0.0
+
+        while not h == []:
+            # print()
+            current = heappop(h)[0]
+
+            if current == destination:
+                break
+            for next_h in adj(graph, current):
+                next_cost = next_h[0]
+                next_coord = next_h[1]
+                new_cost = cost_so_far[current] + next_cost
+
+                if next_coord not in cost_so_far or new_cost < cost_so_far[next_coord]:
+                    cost_so_far[next_coord] = new_cost
+                    priority = new_cost
+                    heappush(h, (next_coord, priority))
+                    came_from[next_coord] = current
+        for each in cost_so_far:
+            if each not in costs or cost_so_far[each] < costs[each]:
+                costs[each] = cost_so_far[each]
+    return costs
     pass
 
 
@@ -92,26 +122,28 @@ def navigation_edges(level, cell):
     """
     transformations = [(1, 1), (1, 0), (1, -1), (0, -1), (-1, -1), (-1, 0), (-1, 1), (0, 1)]
     edges = []
+    # Apply each transformation to the current coordinate to get adjacent cells in 8 directions, excluding walls
     for transform in transformations:
-        print(f'Current Cell is {cell} and + {transform} = {tuple(map(lambda i, j: i + j, cell, transform))}')
+        # print(f'Current Cell is {cell} and + {transform} = {tuple(map(lambda i, j: i + j, cell, transform))}')
         adj_cell = tuple(map(lambda i, j: i + j, cell, transform))
         adj_cost = 0.0
         curr_cost = level["spaces"][cell]
         if adj_cell in level["spaces"]:
-            print(f'{adj_cell} is a space and has cost {level["spaces"][adj_cell]}')
+            # print(f'{adj_cell} is a space and has cost {level["spaces"][adj_cell]}')
             adj_cost = level["spaces"][adj_cell]
         elif adj_cell in level["walls"]:
-            print(f'{adj_cell} is a wall')
+            # print(f'{adj_cell} is a wall')
             continue
         elif adj_cell in level["waypoints"]:
-            print(f'{adj_cell} is a waypoint')
+            # print(f'{adj_cell} is a waypoint')
             adj_cost = 1.0
+        # Calculate the distance between the current cell and the adjacent cell, using a different formula if diagonal
         if 0 in transform:
             edge_cost = .5 * adj_cost + .5 * curr_cost
         else:
             edge_cost = (.5 * sqrt(2)) * adj_cost + (.5 * sqrt(2)) * curr_cost
         heappush(edges, (edge_cost, adj_cell))
-    print(f'edges for cell {cell} with costs are {edges}')
+    # print(f'edges for cell {cell} with costs are {edges}')
     return edges
     pass
 
