@@ -21,7 +21,7 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     # print(f'Initial position is {initial_position} and Destination is {destination}')
     # print(f'Level has waypoints {graph["waypoints"]}')
     h = []
-    heappush(h, (initial_position, 0))
+    heappush(h, (0, initial_position))
     came_from = dict()
     cost_so_far = dict()
     came_from[initial_position] = None
@@ -29,7 +29,7 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
 
     while not h == []:
         # print()
-        current = heappop(h)[0]
+        current = heappop(h)[1]
 
         if current == destination:
             break
@@ -42,7 +42,7 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
             if next_coord not in cost_so_far or new_cost < cost_so_far[next_coord]:
                 cost_so_far[next_coord] = new_cost
                 priority = new_cost
-                heappush(h, (next_coord, priority))
+                heappush(h, (priority, next_coord))
                 came_from[next_coord] = current
     end = destination
     path = []
@@ -71,35 +71,29 @@ def dijkstras_shortest_path_to_all(initial_position, graph, adj):
         A dictionary, mapping destination cells to the cost of a path from the initial_position.
     """
     costs = dict()
-    for key in graph["waypoints"]:
-        destination = graph["waypoints"][key]
-        h = []
-        heappush(h, (initial_position, 0))
-        came_from = dict()
-        cost_so_far = dict()
-        came_from[initial_position] = None
-        cost_so_far[initial_position] = 0.0
+    h = []
+    heappush(h, (0, initial_position))
+    came_from = dict()
+    cost_so_far = dict()
+    came_from[initial_position] = None
+    cost_so_far[initial_position] = 0.0
 
-        while not h == []:
-            # print()
-            current = heappop(h)[0]
+    while not h == []:
+        # print()
+        current = heappop(h)[1]
 
-            if current == destination:
-                break
-            for next_h in adj(graph, current):
-                next_cost = next_h[0]
-                next_coord = next_h[1]
-                new_cost = cost_so_far[current] + next_cost
+        for next_h in adj(graph, current):
+            # print(f'adj cell has coord {next_h[1]} with cost {next_h[0]}')
+            next_cost = next_h[0]
+            next_coord = next_h[1]
+            new_cost = cost_so_far[current] + next_cost
 
-                if next_coord not in cost_so_far or new_cost < cost_so_far[next_coord]:
-                    cost_so_far[next_coord] = new_cost
-                    priority = new_cost
-                    heappush(h, (next_coord, priority))
-                    came_from[next_coord] = current
-        for each in cost_so_far:
-            if each not in costs or cost_so_far[each] < costs[each]:
-                costs[each] = cost_so_far[each]
-    return costs
+            if next_coord not in cost_so_far or new_cost < cost_so_far[next_coord]:
+                cost_so_far[next_coord] = new_cost
+                priority = new_cost
+                heappush(h, (priority, next_coord))
+                came_from[next_coord] = current
+    return cost_so_far
     pass
 
 
@@ -198,7 +192,7 @@ def cost_to_all_cells(filename, src_waypoint, output_filename):
 
 
 if __name__ == '__main__':
-    filename, src_waypoint, dst_waypoint = 'example.txt', 'a','c'
+    filename, src_waypoint, dst_waypoint = 'test_maze.txt', 'a','b'
 
     # Use this function call to find the route between two waypoints.
     test_route(filename, src_waypoint, dst_waypoint)
