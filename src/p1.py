@@ -53,8 +53,8 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
         # print(f'path is currently {path} at current cell {end}')
         path.append(end)
         end = came_from[end]
-
-    # print()
+    path.append(initial_position)
+    print(f'cost to {destination} is {cost_so_far[destination]}')
     return path
     pass
 
@@ -192,7 +192,7 @@ def cost_to_all_cells(filename, src_waypoint, output_filename):
 
 
 if __name__ == '__main__':
-    filename, src_waypoint, dst_waypoint = 'test_maze.txt', 'a','b'
+    filename, src_waypoint, dst_waypoint = 'example.txt', 'a','b'
 
     # Use this function call to find the route between two waypoints.
     test_route(filename, src_waypoint, dst_waypoint)
