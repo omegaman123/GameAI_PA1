@@ -27,10 +27,11 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
     came_from[initial_position] = None
     cost_so_far[initial_position] = 0.0
 
+    # Dijkstras forward search algorithm implemented with help of reading
     while not h == []:
         # print()
         current = heappop(h)[1]
-
+        # Keep searching graph by following lowest cost until destination is found
         if current == destination:
             break
         for next_h in adj(graph, current):
@@ -46,9 +47,11 @@ def dijkstras_shortest_path(initial_position, destination, graph, adj):
                 came_from[next_coord] = current
     end = destination
     path = []
+    # If the node is unreachable return none
     if end not in came_from:
         return None
     # print(f'cost to node {end} is {cost_so_far[end]}')
+    # Otherwise, follow the path backwards from the end with the dict recording each nodes predecessor
     while end is not initial_position:
         # print(f'path is currently {path} at current cell {end}')
         path.append(end)
@@ -70,7 +73,6 @@ def dijkstras_shortest_path_to_all(initial_position, graph, adj):
     Returns:
         A dictionary, mapping destination cells to the cost of a path from the initial_position.
     """
-    costs = dict()
     h = []
     heappush(h, (0, initial_position))
     came_from = dict()
@@ -78,10 +80,11 @@ def dijkstras_shortest_path_to_all(initial_position, graph, adj):
     came_from[initial_position] = None
     cost_so_far[initial_position] = 0.0
 
+    # Dijkstra's forward search algorithim implemented with heapq and help from assigned reading
     while not h == []:
         # print()
         current = heappop(h)[1]
-
+        # Same as searching for a specific waypoint but with no break condition to record cost to all nodes
         for next_h in adj(graph, current):
             # print(f'adj cell has coord {next_h[1]} with cost {next_h[0]}')
             next_cost = next_h[0]
@@ -93,6 +96,7 @@ def dijkstras_shortest_path_to_all(initial_position, graph, adj):
                 priority = new_cost
                 heappush(h, (priority, next_coord))
                 came_from[next_coord] = current
+    # Return dictionary of costs to all nodes
     return cost_so_far
     pass
 
@@ -122,6 +126,7 @@ def navigation_edges(level, cell):
         adj_cell = tuple(map(lambda i, j: i + j, cell, transform))
         adj_cost = 0.0
         curr_cost = level["spaces"][cell]
+        # Determine what kind of cell the adjacent cell is to find the according cost
         if adj_cell in level["spaces"]:
             # print(f'{adj_cell} is a space and has cost {level["spaces"][adj_cell]}')
             adj_cost = level["spaces"][adj_cell]
